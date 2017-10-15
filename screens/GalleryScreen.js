@@ -1,33 +1,56 @@
 import React, { Component } from 'react';
-import { View, FlatList, Text, Image, Dimensions } from 'react-native';
+import { View, FlatList, Text, Image, Dimensions, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
-import { FileSystem } from 'expo';
+import { FileSystem, AppLoading } from 'expo';
+import _ from 'lodash';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const DIRECTORY_URI = FileSystem.documentDirectory + 'photos/';
+const DIR_URL = FileSystem.documentDirectory + 'photos/';
+const PROFILE_PICTURE = 'profile.jpg';
 
 class MainScreen extends Component {
-  static navigationOptions = {
+  static navigationOptions = ({ navigation }) => ({
     headerTitle: 'Callisto',
-    headerLeft: null
-  };
+    headerLeft: null,
+    headerRight: (
+      <Button
+        title="Profile"
+        onPress={() => navigation.navigate('profile')}
+        backgroundColor="rgba(0,0,0,0)"
+        color="rgba(0, 122, 255, 1)"
+      />
+    )
+  });
 
   state = {
     photos: [],
+    username: null
   };
 
   async componentWillMount() {
     try {
-      await FileSystem.makeDirectoryAsync(DIRECTORY_URI)
+      await FileSystem.makeDirectoryAsync(DIR_URL);
     } catch(e) {
       console.log(e, 'Directory exists');
     }
   }
 
   async componentDidMount() {
-    let photos = await FileSystem.readDirectoryAsync(DIRECTORY_URI);
+    let [ photos, username ] = await Promise.all([
+      FileSystem.readDirectoryAsync(DIR_URL),
+      AsyncStorage.getItem('username'),
+    ]);
 
-    this.setState({ photos });
+    this.setState({
+      photos,
+      username: _.isNull(username) ? 'Default Username' : username
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      photos: nextProps.photos,
+    });
   }
 
   onOpenCamera = () => {
@@ -38,14 +61,16 @@ class MainScreen extends Component {
     return <Image
       style={styles.picture}
       source={{
-        uri: DIRECTORY_URI + item,
+        uri: DIR_URL + item,
       }}
       key={item}
     />;
   };
 
   render() {
-    console.log('state', this.state.photos);
+    const { photos, username } = this.state;
+    const avatar = photos && photos.find(image => image === PROFILE_PICTURE);
+
     return(
       <View style={styles.container}>
         <Button
@@ -55,15 +80,25 @@ class MainScreen extends Component {
           raised
         />
         {
-          this.state.photos &&
+          photos &&
             <FlatList
-              data={this.state.photos}
+              data={photos && photos.filter(item => item !== PROFILE_PICTURE)}
               renderItem={this.renderImage}
               keyExtractor={item => item}
               numColumns={3}
             />
         }
-
+        <View style={styles.profile}>
+          <Text>{`${username}`.toUpperCase()}</Text>
+          {
+            avatar
+              ? <Image
+                  style={styles.profileImage}
+                  source={{ uri: DIR_URL + PROFILE_PICTURE}}
+                />
+              : <View style={[styles.profileImage, styles.defaultImage]}/>
+          }
+        </View>
       </View>
     )
   }
@@ -73,7 +108,8 @@ export default MainScreen;
 
 const styles = {
   container: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'column-reverse'
   },
   button: {
     backgroundColor: '#0288D1',
@@ -82,5 +118,21 @@ const styles = {
   picture: {
     width: SCREEN_WIDTH / 3,
     height: SCREEN_WIDTH / 3,
+  },
+  profile: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'white'
+  },
+  profileImage: {
+    marginLeft: 20,
+    width: 50,
+    height:50,
+    borderRadius: 25
+  },
+  defaultImage: {
+    backgroundColor: 'lightgrey'
   }
 };

@@ -1,4 +1,4 @@
-import { AsyncStorage, Alert } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { Facebook } from 'expo';
 
 import {

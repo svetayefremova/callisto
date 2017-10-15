@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Vibration } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationActions } from 'react-navigation';
 import { ImagePicker, FileSystem } from 'expo';
 import uuidv1 from 'uuid/v1';
 
-const DIRECTORY_URI = FileSystem.documentDirectory + 'photos/';
+const DIR_URL = FileSystem.documentDirectory + 'photos/';
 
 class LibraryScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -24,17 +24,13 @@ class LibraryScreen extends Component {
 
 
   onPickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
+    let result = await ImagePicker.launchImageLibraryAsync();
 
     if (!result.cancelled) {
       await FileSystem.moveAsync({
         from: result.uri,
-        to: DIRECTORY_URI + `Photo_${uuidv1()}.jpg`,
+        to: DIR_URL + `Photo_${uuidv1()}.jpg`,
       });
-      Vibration.vibrate();
       this.props.navigation.navigate('gallery');
     }
   };
@@ -43,9 +39,9 @@ class LibraryScreen extends Component {
     return (
       <View style={styles.container}>
         <Button
-          title="Camera Roll"
+          title="Take Picture From Camera Roll"
           onPress={this.onPickImage}
-          buttonStyles={styles.button}
+          buttonStyle={styles.button}
           backgroundColor={'transparent'}
           color={'black'}
           iconRight={{name: 'caret-down', type: 'font-awesome', style: { color: 'black' }}}
@@ -60,8 +56,7 @@ export default LibraryScreen;
 const styles = {
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    marginTop: 40
   },
   button: {
     marginVertical: 20

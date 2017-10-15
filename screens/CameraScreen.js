@@ -7,7 +7,7 @@ import { NavigationActions } from 'react-navigation';
 import _ from 'lodash';
 import uuidv1 from 'uuid/v1';
 
-const DIRECTORY_URI = FileSystem.documentDirectory + 'photos/';
+const DIR_URL = FileSystem.documentDirectory + 'photos/';
 
 class CameraScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -40,7 +40,7 @@ class CameraScreen extends Component {
       let photo = await camera.takePictureAsync();
       await FileSystem.moveAsync({
         from: photo.uri,
-        to: DIRECTORY_URI + `Photo_${uuidv1()}.jpg`,
+        to: DIR_URL + `Photo_${uuidv1()}.jpg`,
       });
       Vibration.vibrate();
       this.props.navigation.navigate('gallery');
