@@ -49,15 +49,15 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightblue',
+    backgroundColor: '#0c486d',
   },
   button: {
     backgroundColor: '#0288D1',
-    width: 300,
+    width: 300
   },
   text: {
     fontSize: 36,
-    marginBottom: 15,
+    marginBottom: 40,
     color: 'white',
     textAlign: 'center',
   },

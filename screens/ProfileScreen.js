@@ -88,15 +88,18 @@ const styles = {
     marginBottom: 24
   },
   button: {
-    marginTop: 40
+    marginTop: 40,
+    width: SCREEN_WIDTH * 0.8
   },
   imageButton: {
     borderWidth: 1,
     borderColor: 'grey',
-    marginVertical: 20
+    marginVertical: 20,
+    width: SCREEN_WIDTH * 0.8
   },
   input: {
-    width: SCREEN_WIDTH * 0.8
+    width: SCREEN_WIDTH * 0.8,
+    marginBottom: 20
   },
   profilePicture: {
     width: 200,
