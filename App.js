@@ -5,15 +5,27 @@ import { Provider } from 'react-redux';
 import store from './store';
 import WelcomeScreen from './screens/WelcomeScreen';
 import AuthScreen from './screens/AuthScreen';
-import MainScreen from './screens/MainScreen';
+import GalleryScreen from './screens/GalleryScreen';
 import UserScreen from './screens/UserScreen';
+import CameraScreen from './screens/CameraScreen';
+import LibraryScreen from './screens/LibraryScreen';
 
 const MainNavigator = TabNavigator({
   welcome: { screen: WelcomeScreen },
   auth: { screen: AuthScreen },
   main: { screen: StackNavigator({
-    list: { screen: MainScreen },
-    user: { screen: UserScreen }
+    gallery: { screen: GalleryScreen },
+    user: { screen: UserScreen },
+    modal: { screen: TabNavigator({
+      camera: { screen: CameraScreen },
+      library: { screen: LibraryScreen }
+    }, {
+      tabBarOptions: {
+        showLabel: false
+      }
+    })}
+  }, {
+    mode: 'modal'
   })}
 }, {
   navigationOptions: {
