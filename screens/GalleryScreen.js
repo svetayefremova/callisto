@@ -17,7 +17,6 @@ class MainScreen extends Component {
   };
 
   async componentWillMount() {
-    // await FileSystem.deleteAsync(DIRECTORY_URI);
     try {
       await FileSystem.makeDirectoryAsync(DIRECTORY_URI)
     } catch(e) {
@@ -32,7 +31,7 @@ class MainScreen extends Component {
   }
 
   onOpenCamera = () => {
-    this.props.navigation.navigate('camera');
+    this.props.navigation.navigate('modal');
   };
 
   renderImage = ({ item }) => {

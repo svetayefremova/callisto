@@ -17,8 +17,8 @@ const MainNavigator = TabNavigator({
     gallery: { screen: GalleryScreen },
     user: { screen: UserScreen },
     modal: { screen: TabNavigator({
-      camera: { screen: CameraScreen },
-      library: { screen: LibraryScreen }
+      library: { screen: LibraryScreen },
+      camera: { screen: CameraScreen }
     }, {
       tabBarOptions: {
         showLabel: false

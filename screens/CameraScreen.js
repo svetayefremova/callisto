@@ -5,6 +5,7 @@ import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationActions } from 'react-navigation';
 import _ from 'lodash';
+import uuidv1 from 'uuid/v1';
 
 const DIRECTORY_URI = FileSystem.documentDirectory + 'photos/';
 
@@ -23,8 +24,7 @@ class CameraScreen extends Component {
   });
 
   state = {
-    hasCameraPermission: null,
-    photoId: 1
+    hasCameraPermission: null
   };
 
   async componentWillMount() {
@@ -38,12 +38,11 @@ class CameraScreen extends Component {
   onTakePhoto = async camera => {
     if (camera) {
       let photo = await camera.takePictureAsync();
-      await FileSystem.copyAsync({
+      await FileSystem.moveAsync({
         from: photo.uri,
-        to: DIRECTORY_URI + `Photo_${this.state.photoId}.jpg`,
+        to: DIRECTORY_URI + `Photo_${uuidv1()}.jpg`,
       });
       Vibration.vibrate();
-      this.setState({ photoId: this.state.photoId + 1 });
       this.props.navigation.navigate('gallery');
     }
   };
@@ -56,7 +55,7 @@ class CameraScreen extends Component {
     }
 
     if (hasCameraPermission === false) {
-      return <Text>No acoess to camera</Text>;
+      return <Text>No access to camera</Text>;
     }
 
     return (
