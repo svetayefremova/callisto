@@ -1,6 +1,8 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
+import { Constants } from 'expo';
 
 import store from './store';
 import WelcomeScreen from './screens/WelcomeScreen';
@@ -21,12 +23,15 @@ const MainNavigator = TabNavigator({
       library: { screen: LibraryScreen },
     }, {
       tabBarOptions: {
-        showLabel: false
+        showLabel: Platform.OS === 'android'
       },
       backBehavior: 'none'
     })}
   }, {
-    mode: 'modal'
+    mode: 'modal',
+    cardStyle: {
+      paddingTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
+    }
   })}
 }, {
   navigationOptions: {

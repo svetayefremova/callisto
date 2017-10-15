@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const DIR_URL = FileSystem.documentDirectory + 'photos/';
 const PROFILE_PICTURE = 'profile.jpg';
 
-class MainScreen extends Component {
+class GalleryScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: 'Callisto',
     headerLeft: null,
@@ -76,7 +76,8 @@ class MainScreen extends Component {
         <Button
           icon={{ name: 'plus', type: 'font-awesome', style: { marginRight: 0 } }}
           onPress={this.onOpenCamera}
-          buttonStyle={styles.button}
+          containerViewStyle={styles.button}
+          backgroundColor={'#0288D1'}
           raised
         />
         {
@@ -104,7 +105,7 @@ class MainScreen extends Component {
   }
 }
 
-export default MainScreen;
+export default GalleryScreen;
 
 const styles = {
   container: {
@@ -112,7 +113,6 @@ const styles = {
     flexDirection: 'column-reverse'
   },
   button: {
-    backgroundColor: '#0288D1',
     marginVertical: 15,
   },
   picture: {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, AsyncStorage, Image } from 'react-native';
+import { View, ScrollView, Text, Dimensions, AsyncStorage, Image } from 'react-native';
 import { ImagePicker, FileSystem } from 'expo';
 import { Button, FormLabel, FormInput } from 'react-native-elements';
 
@@ -42,7 +42,7 @@ class ProfileScreen extends Component {
     const { avatar } = this.state;
 
     return(
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Change Profile's Data</Text>
         <FormLabel>Username</FormLabel>
         <FormInput
@@ -66,10 +66,11 @@ class ProfileScreen extends Component {
         <Button
           title="SAVE"
           onPress={this.onSave}
-          buttonStyle={styles.button}
+          containerViewStyle={styles.button}
+          backgroundColor={'#0288D1'}
           raised
         />
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -80,15 +81,14 @@ const styles = {
   container: {
     display: 'flex',
     alignItems: 'center',
-    marginTop: 40
+    paddingVertical: 40
   },
   title: {
     fontSize: 18,
     marginBottom: 24
   },
   button: {
-    marginTop: 40,
-    backgroundColor: '#0288D1'
+    marginTop: 40
   },
   imageButton: {
     borderWidth: 1,
