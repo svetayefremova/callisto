@@ -1,4 +1,4 @@
-# Callisto - app to add pictures to account
+# Callisto - app to add pictures to account gallery
 
 Link: https://expo.io/@svitlanaiefremova/callisto
 
@@ -10,6 +10,6 @@ Link: https://expo.io/@svitlanaiefremova/callisto
 
 ### TODO
 
- - fix order of added pictures
- - fix avatar's changing logic
- - refactor
+ - refactor: make constants folder for styles, colors, dimensions
+ - fix bug with auth service when close popup
+ - add possibility to add username and progile picture from facebook account after authentication
