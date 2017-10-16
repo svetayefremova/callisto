@@ -12,4 +12,4 @@ Link without Facebook login flow: https://expo.io/@svitlanaiefremova/callisto
 
  - refactor: make constants folder for styles, colors, dimensions
  - fix bug with auth service when close popup
- - add possibility to add username and progile picture from facebook account after authentication
+ - add possibility to add username and profile picture from facebook account after authentication
