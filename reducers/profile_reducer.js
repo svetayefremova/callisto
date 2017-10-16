@@ -6,7 +6,6 @@ import {
 } from '../actions/types';
 
 export default (state = {}, action) => {
-  console.log(action);
   switch (action.type) {
     case ADD_AVATAR_SUCCESS:
     case FETCH_AVATAR_SUCCESS:
