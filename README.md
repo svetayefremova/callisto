@@ -1,4 +1,4 @@
-# Callisto - app to add pictures to user's gallery
+# Callisto - app for adding pictures to user's gallery
 
 Link without Facebook login flow: https://expo.io/@svitlanaiefremova/callisto
 
