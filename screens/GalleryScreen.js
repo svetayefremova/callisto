@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { View, FlatList, Text, Image, Dimensions, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import { FileSystem, AppLoading } from 'expo';
+import { connect } from 'react-redux';
 import _ from 'lodash';
+import { fetchPhotos, fetchAvatar } from '../actions';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const DIR_URL = FileSystem.documentDirectory + 'photos/';
-const PROFILE_PICTURE = 'profile.jpg';
+const PHOTOS_DIR_URL = FileSystem.documentDirectory + 'photos/';
+const PROFILE_DIR_URL = FileSystem.documentDirectory + 'profile/';
 
 class GalleryScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -23,34 +25,22 @@ class GalleryScreen extends Component {
   });
 
   state = {
-    photos: [],
     username: null
   };
 
   async componentWillMount() {
-    try {
-      await FileSystem.makeDirectoryAsync(DIR_URL);
-    } catch(e) {
-      console.log(e, 'Directory exists');
-    }
+    await Promise.all([
+      FileSystem.makeDirectoryAsync(PHOTOS_DIR_URL, { intermediates: true }),
+      FileSystem.makeDirectoryAsync(PROFILE_DIR_URL, { intermediates: true })
+    ]);
   }
 
   async componentDidMount() {
-    let [ photos, username ] = await Promise.all([
-      FileSystem.readDirectoryAsync(DIR_URL),
-      AsyncStorage.getItem('username'),
-    ]);
+    this.props.fetchPhotos();
+    this.props.fetchAvatar();
 
-    this.setState({
-      photos,
-      username: _.isNull(username) ? 'Default Username' : username
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      photos: nextProps.photos,
-    });
+    const username = await AsyncStorage.getItem('username');
+    this.setState({ username: _.isNull(username) ? 'Default Username' : username });
   }
 
   onOpenCamera = () => {
@@ -61,15 +51,15 @@ class GalleryScreen extends Component {
     return <Image
       style={styles.picture}
       source={{
-        uri: DIR_URL + item,
+        uri: PHOTOS_DIR_URL + item,
       }}
       key={item}
     />;
   };
 
   render() {
-    const { photos, username } = this.state;
-    const avatar = photos && photos.find(image => image === PROFILE_PICTURE);
+    const { username } = this.state;
+    const { photos, avatar } = this.props;
 
     return(
       <View style={styles.container}>
@@ -83,7 +73,7 @@ class GalleryScreen extends Component {
         {
           photos &&
             <FlatList
-              data={photos && photos.filter(item => item !== PROFILE_PICTURE)}
+              data={photos}
               renderItem={this.renderImage}
               keyExtractor={item => item}
               numColumns={3}
@@ -95,7 +85,7 @@ class GalleryScreen extends Component {
             avatar
               ? <Image
                   style={styles.profileImage}
-                  source={{ uri: DIR_URL + PROFILE_PICTURE}}
+                  source={{ uri: PROFILE_DIR_URL + avatar }}
                 />
               : <View style={[styles.profileImage, styles.defaultImage]}/>
           }
@@ -105,7 +95,14 @@ class GalleryScreen extends Component {
   }
 }
 
-export default GalleryScreen;
+const mapStateToProps = ({ photos, profile }) => {
+  return {
+    photos: photos.photos,
+    avatar: profile.avatar
+  };
+};
+
+export default connect(mapStateToProps, { fetchPhotos, fetchAvatar })(GalleryScreen);
 
 const styles = {
   container: {

@@ -1,45 +1,44 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, Dimensions, AsyncStorage, Image } from 'react-native';
+import { connect } from 'react-redux';
 import { ImagePicker, FileSystem } from 'expo';
 import { Button, FormLabel, FormInput } from 'react-native-elements';
 
+import { addAvatar } from '../actions';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const DIR_URL = FileSystem.documentDirectory + 'photos/';
-const PROFILE_PICTURE = 'profile.jpg';
 
 class ProfileScreen extends Component {
   state = {
     username: null,
-    avatar: null
+    avatarUri: null
   };
 
   onPickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3]
     });
 
     if (!result.cancelled) {
-      this.setState({ avatar: result.uri });
+      this.setState({ avatarUri: result.uri });
     }
   };
 
   onSave = async () => {
-    const { username, avatar } = this.state;
+    const { username, avatarUri } = this.state;
 
-    await Promise.all([
-      username && AsyncStorage.setItem('username', username),
-      avatar && FileSystem.moveAsync({
-        from: avatar,
-        to: DIR_URL + PROFILE_PICTURE,
-      })
-    ]);
+    username &&
+      await AsyncStorage.setItem('username', username);
+
+    avatarUri &&
+      this.props.addAvatar(avatarUri);
 
     this.props.navigation.navigate('gallery');
   };
 
   render() {
-    const { avatar } = this.state;
+    const { avatarUri } = this.state;
 
     return(
       <ScrollView contentContainerStyle={styles.container}>
@@ -57,9 +56,9 @@ class ProfileScreen extends Component {
           color={'grey'}
         />
         {
-          avatar &&
+          avatarUri &&
             <Image
-              source={{ uri: avatar }}
+              source={{ uri: avatarUri }}
               style={styles.profilePicture}
             />
         }
@@ -75,7 +74,7 @@ class ProfileScreen extends Component {
   }
 }
 
-export default ProfileScreen;
+export default connect(null, { addAvatar })(ProfileScreen);
 
 const styles = {
   container: {

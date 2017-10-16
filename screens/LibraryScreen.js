@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
+import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationActions } from 'react-navigation';
 import { ImagePicker, FileSystem } from 'expo';
-import uuidv1 from 'uuid/v1';
 
-const DIR_URL = FileSystem.documentDirectory + 'photos/';
+import { addPhoto } from '../actions';
 
 class LibraryScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -27,10 +27,7 @@ class LibraryScreen extends Component {
     let result = await ImagePicker.launchImageLibraryAsync();
 
     if (!result.cancelled) {
-      await FileSystem.moveAsync({
-        from: result.uri,
-        to: DIR_URL + `Photo_${uuidv1()}.jpg`,
-      });
+      this.props.addPhoto(result);
       this.props.navigation.navigate('gallery');
     }
   };
@@ -51,7 +48,7 @@ class LibraryScreen extends Component {
   }
 }
 
-export default LibraryScreen;
+export default connect(null, { addPhoto })(LibraryScreen);
 
 const styles = {
   container: {

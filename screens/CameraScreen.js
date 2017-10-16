@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, Vibration } from 'react-native';
 import { Camera, Permissions, FileSystem } from 'expo';
+import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationActions } from 'react-navigation';
 import _ from 'lodash';
-import uuidv1 from 'uuid/v1';
 
-const DIR_URL = FileSystem.documentDirectory + 'photos/';
+import { addPhoto } from '../actions';
 
 class CameraScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -37,11 +37,10 @@ class CameraScreen extends Component {
 
   onTakePhoto = async camera => {
     if (camera) {
-      let photo = await camera.takePictureAsync();
-      await FileSystem.moveAsync({
-        from: photo.uri,
-        to: DIR_URL + `Photo_${uuidv1()}.jpg`,
-      });
+      let result = await camera.takePictureAsync();
+
+      this.props.addPhoto(result);
+
       Vibration.vibrate();
       this.props.navigation.navigate('gallery');
     }
@@ -55,7 +54,7 @@ class CameraScreen extends Component {
     }
 
     if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
+      return <View style={styles.noaccess}><Text>No access to camera</Text></View>;
     }
 
     return (
@@ -80,7 +79,7 @@ class CameraScreen extends Component {
   }
 }
 
-export default CameraScreen;
+export default connect(null, { addPhoto })(CameraScreen);
 
 const styles = {
   container: {
@@ -103,4 +102,9 @@ const styles = {
     borderRadius: 40,
     backgroundColor: 'rgba(255,255,255,0.24)',
   },
+  noaccess: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 };
