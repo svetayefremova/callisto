@@ -2,7 +2,7 @@
 
 Link: https://expo.io/@svitlanaiefremova/callisto
 
-## Tasks
+## WHAT IS DONE
 
 - Authentication with Facebook
 - Possibility to add photo from camera and camera roll to the app gallery
